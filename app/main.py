@@ -171,7 +171,26 @@ async def reply(req: ReplyRequest):
 
 
 # ── GET /v1/healthz ──────────────────────────────────────────────────────
-@app.get("/v1/healthz")
+@app.get("/")
+async def root():
+    return {
+        "status": "ok",
+        "app": "VERA AI - magicpin AI Challenge",
+        "team": "Vera_Shivansh",
+        "endpoints": {
+            "health": "/v1/healthz",
+            "metadata": "/v1/metadata",
+            "docs": "/docs",
+            "context": "/v1/context",
+            "tick": "/v1/tick",
+            "reply": "/v1/reply",
+            "teardown": "/v1/teardown"
+        }
+    }
+
+
+@app.get("/healthz", response_model=HealthResponse)
+@app.get("/v1/healthz", response_model=HealthResponse)
 async def healthz():
     now = datetime.now(timezone.utc)
     uptime = int((now - BOOT_TIME).total_seconds())
@@ -187,7 +206,8 @@ async def healthz():
 
 
 # ── GET /v1/metadata ─────────────────────────────────────────────────────
-@app.get("/v1/metadata")
+@app.get("/metadata", response_model=MetadataResponse)
+@app.get("/v1/metadata", response_model=MetadataResponse)
 async def metadata():
     return MetadataResponse(
         team_name=TEAM_NAME,
